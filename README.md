@@ -23,8 +23,8 @@ This is a FastAPI-based API that classifies a given number and returns its mathe
     ```
 
 ## Deployment
-The API is deployed on Render and can be accessed at:  
-[https://number-classification-api.onrender.com](https://number-classification-api.onrender.com)
+The API is deployed on Render and can be accessed at:
+[https://hng-stage-1-backend.onrender.com](https://hng-stage-1-backend.onrender.com)
 
 ## Local Setup
 1. Clone the repository:
@@ -50,5 +50,5 @@ The API is deployed on Render and can be accessed at:
 Once deployed, test the API using the Render-provided URL. For example:
 
 ```
-https://number-classification-api.onrender.com/api/classify-number?number=371
+https://hng-stage-1-backend.onrender.com/api/classify-number?number=371
 ```
