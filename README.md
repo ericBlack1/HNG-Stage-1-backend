@@ -29,7 +29,7 @@ The API is deployed on Render and can be accessed at:
 ## Local Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/number-classification-api.git
+   git clone https://github.com/ericBlack1/HNG-Stage-1-backend.git
    ```
 2. Install dependencies:
    ```bash
