@@ -76,5 +76,5 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
     return JSONResponse(
         status_code=400,
-        content={"number": invalid_input, "error": True},
+        content={"number": "alphabet", "error": True},
     )
