@@ -10,13 +10,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["GET"],
-    allow_headers=["*"],
 )
 
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
-    for i in range(2, int(n**0.5) + 1):
+    for i in range(2, int(abs(n**0.5)) + 1):
         if n % i == 0:
             return False
     return True
@@ -24,47 +23,46 @@ def is_prime(n: int) -> bool:
 def is_perfect(n: int) -> bool:
     if n < 2:
         return False
-    divisors = [i for i in range(1, n) if n % i == 0]
-    return sum(divisors) == n
+    divisors = [i for i in range(1, abs(n)) if n % i == 0]
+    return sum(divisors) == abs(n)
 
 def is_armstrong(n: int) -> bool:
-    digits = [int(d) for d in str(n)]
+    digits = [int(d) for d in str(abs(n))]
     length = len(digits)
-    return sum(d**length for d in digits) == n
+    return sum(d**length for d in digits) == abs(n)
 
 def digit_sum(n: int) -> int:
-    return sum(int(d) for d in str(n))
+    return sum(int(d) for d in str(abs(n)))
 
 def get_fun_fact(n: int) -> str:
-    url = f"http://numbersapi.com/{n}/math"
+    url = f"http://numbersapi.com/{abs(n)}/math"
     response = requests.get(url)
     return response.text if response.status_code == 200 else "No fun fact available."
 
 @app.get("/api/classify-number")
 async def classify_number(number: int = Query(..., description="The number to classify")):
-    if number < 0:
-        raise HTTPException(status_code=400, detail="Number must be a non-negative integer.")
+    abs_number = abs(number)
 
     properties = []
-    if is_prime(number):
+    if is_prime(abs_number):
         properties.append("prime")
-    if is_perfect(number):
+    if is_perfect(abs_number):
         properties.append("perfect")
-    if is_armstrong(number):
+    if is_armstrong(abs_number):
         properties.append("armstrong")
-    if number % 2 == 0:
+    if abs_number % 2 == 0:
         properties.append("even")
     else:
         properties.append("odd")
 
-    fun_fact = get_fun_fact(number)
+    fun_fact = get_fun_fact(abs_number)
 
     return {
         "number": number,
-        "is_prime": is_prime(number),
-        "is_perfect": is_perfect(number),
+        "is_prime": is_prime(abs_number),
+        "is_perfect": is_perfect(abs_number),
         "properties": properties,
-        "digit_sum": digit_sum(number),
+        "digit_sum": digit_sum(abs_number),
         "fun_fact": fun_fact,
     }
 
@@ -79,11 +77,4 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return JSONResponse(
         status_code=400,
         content={"number": invalid_input, "error": True},
-    )
-
-@app.exception_handler(ValueError)
-async def value_error_handler(request, exc):
-    return JSONResponse(
-        status_code=400,
-        content={"number": str(exc), "error": True},
     )
