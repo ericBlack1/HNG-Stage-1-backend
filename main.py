@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 import requests
 
 app = FastAPI()
@@ -66,6 +67,19 @@ async def classify_number(number: int = Query(..., description="The number to cl
         "digit_sum": digit_sum(number),
         "fun_fact": fun_fact,
     }
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    invalid_input = None
+    for error in exc.errors():
+        if error["type"] == "int_parsing":
+            invalid_input = error["input"]
+            break
+
+    return JSONResponse(
+        status_code=400,
+        content={"number": invalid_input, "error": True},
+    )
 
 @app.exception_handler(ValueError)
 async def value_error_handler(request, exc):
