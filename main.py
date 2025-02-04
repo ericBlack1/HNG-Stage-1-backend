@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import requests
 
 app = FastAPI()
@@ -12,7 +13,6 @@ app.add_middleware(
 )
 
 def is_prime(n: int) -> bool:
-    """Check if a number is prime."""
     if n < 2:
         return False
     for i in range(2, int(n**0.5) + 1):
@@ -21,24 +21,20 @@ def is_prime(n: int) -> bool:
     return True
 
 def is_perfect(n: int) -> bool:
-    """Check if a number is perfect."""
     if n < 2:
         return False
     divisors = [i for i in range(1, n) if n % i == 0]
     return sum(divisors) == n
 
 def is_armstrong(n: int) -> bool:
-    """Check if a number is an Armstrong number."""
     digits = [int(d) for d in str(n)]
     length = len(digits)
     return sum(d**length for d in digits) == n
 
 def digit_sum(n: int) -> int:
-    """Calculate the sum of digits of a number."""
     return sum(int(d) for d in str(n))
 
 def get_fun_fact(n: int) -> str:
-    """Fetch a fun fact about the number from numbersapi.com."""
     url = f"http://numbersapi.com/{n}/math"
     response = requests.get(url)
     return response.text if response.status_code == 200 else "No fun fact available."
